@@ -1,0 +1,39 @@
+#!/usr/bin/python3
+
+#import argparse
+#import os
+#import time
+#import sys
+import subprocess
+import multiprocessing
+
+
+def ip_is_reachable(ip):
+    status = subprocess.run(["ping", "-w1", ip], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    return True if status.returncode == 0 else False
+
+
+def worker(ip, counter):
+    if ip_is_reachable(ip):
+        with counter.get_lock():
+            counter.value += 1
+
+
+
+if __name__ == "__main__":
+    # public dns servers: google, cloudflare, quad9, opendns, comodo secure dns
+    ip_list = ["8.8.8.8", "8.8.4.4", "1.1.1.1", "1.0.0.1", "9.9.9.9", "149.112.112.112", "208.67.222.222", "208.67.220.220", "8.26.56.26", "8.20.247.20"]
+
+    counter = multiprocessing.Value('i', 0)
+    
+    # FIXME: redo this using Pool()
+    pool = []
+    for ip in ip_list:
+        pool.append(multiprocessing.Process(target=worker, args=(ip, counter)))
+
+    for p in pool:
+        p.start()
+    for p in pool:
+        p.join()
+
+    print(counter.value, "of", len(ip_list), "reached")
