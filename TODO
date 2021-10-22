@@ -2,11 +2,13 @@
 
 * --gateway
 * cli
+actually provide IPs
 * --count
 how many pings
 * --all or --any or --half
 By default, returns success if ANY ips are reachable.  --all switches to only
 if all are reachable.  --half if at least half of the pings get a response.
-* --quiet, --verbose
-normal output should display all the ping output, verbose has extra debug,
-quiet is silent
+* -d --dns
+additionally use built-in IPs of Public DNS servers provided by...
+* -e --exclude
+do not ping specified IPs, even if they're specified (i.e., via the --dns built-ins)
