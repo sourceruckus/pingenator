@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
 import argparse
-import subprocess
 import multiprocessing
+import subprocess
+import sys
 
 
 # global counter
@@ -32,6 +33,15 @@ Cloudflare, Quad9, OpenDNS, and Comodo Secure DNS:
 """.format(BIN_NAME)
 
 
+# public dns servers
+dns_ips = ["8.8.8.8", "8.8.4.4", # google
+           "1.1.1.1", "1.0.0.1", # cloudflare
+           "9.9.9.9", "149.112.112.112", # quad9
+           "208.67.222.222", "208.67.220.220", # opendns
+           "8.26.56.26", "8.20.247.20", # comodo secure dns
+           ]
+
+
 p = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                             prog='pingenator',
                             description=desc.rstrip(),
@@ -49,24 +59,19 @@ p.add_argument('-q', '--quiet', action='store_true',
                help="""Be quiet.  Only output is "N of N reached".""")
 
 # FIXME: add type=ipaddr type checking... could just check that we can encode
-#        the IP as either an IPv4 or IPv6 address
+#        the IP as either an IPv4 or IPv6 address, but we'll have to allow dns
+#        resolution too
+#
+#        this would be really nice, because spotting a typo in the output after
+#        waiting a few seconds will be hard on tired eyes.
 #
 p.add_argument('ip_list', metavar='IPADDR', nargs='*',
                help="""IP address to ping.""")
 
-
-#p.add_argument('-n', '--dry-run', action='store_true',
-#               help="""Don't actualy do anything, just print what would have
-#               been done.  Go
-#               through the motions, but Feature stage funcs are not
-#               executed.""")
-
-#p.add_argument('--root', metavar='ROOTDIR',
-#               help="""Specifies that we should operate on a filesystem rooted
-#               at ROOTDIR.
-#               This is similar to automake's DESTDIR variable, or srp2's
-#               SRP_ROOT_PREFIX variable""")
-
+p.add_argument('-d', '--dns', action='store_true', dest='use_dns_ips',
+               help="""Additionally use built-in IPs of Public DNS servers
+                    provided by Google, Cloudflare, Quad9, OpenDNS, and
+                    Comodo Secure DNS.""")
 
 
 def check_ip(ip):
@@ -100,6 +105,11 @@ def main():
         args.verbosity = 0
     if args.verbosity > 1:
         print(args)
+
+    if args.use_dns_ips:
+        if args.verbosity > 1:
+            print("adding to ip_list:", dns_ips)
+        args.ip_list.extend(dns_ips)
 
     if len(args.ip_list) == 0:
         print("ERROR: no IPs specified")
