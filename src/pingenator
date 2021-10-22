@@ -73,15 +73,15 @@ def check_ip(ip):
 
 def worker(ip):
     reachable, status = check_ip(ip)
-    if reachable:
-        with counter.get_lock():
+    with counter.get_lock():
+        if reachable:
             counter.value += 1
-            # we do this here, with counter locked, to synchronize stdout from
-            # within our subprocesses.
-            if args.verbosity > 1:
-                print(status)
-            elif args.verbosity > 0:
-                print(status.stdout.decode())
+        # we do this here, with counter locked, to synchronize stdout from
+        # within our subprocesses.
+        if args.verbosity > 1:
+            print(status)
+        elif args.verbosity > 0:
+            print(status.stdout.decode())
 
 
 
