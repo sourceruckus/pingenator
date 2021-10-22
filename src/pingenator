@@ -140,8 +140,9 @@ def main():
         print("ERROR: no IPs specified")
         sys.exit(1)
 
+    x = args.ip_list[:]
     for i in range(args.count-1):
-        args.ip_list += args.ip_list
+        args.ip_list += x
 
     if args.success_percent == 0:
         args.success_count = 1
