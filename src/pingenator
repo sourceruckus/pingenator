@@ -1,15 +1,62 @@
 #!/usr/bin/python3
 
-#import argparse
-#import os
-#import time
-#import sys
+import argparse
 import subprocess
 import multiprocessing
 
 
 # global counter
-counter = multiprocessing.Value('i', 0)
+counter = None
+
+# once we parse our command line arguments, we'll store the results globally
+# here
+args = None
+
+# FIXME: add build system glue to sed these values in prior to install
+PROG_NAME="Pingenator"
+BIN_NAME="pingenator"
+VERSION="0.1.0"
+
+desc = """\
+{} v{} - a super ping tool to get you places
+Copyright (C) 2021 Michael D Labriola <veggiemike@sourceruckus.org>
+""".format(PROG_NAME, VERSION)
+
+epi = """\
+For example, to check reachability of public DNS servers provided by Google,
+Cloudflare, Quad9, OpenDNS, and Comodo Secure DNS:
+
+    {} 8.8.8.8 8.8.4.4 1.1.1.1 1.0.0.1 9.9.9.9 149.112.112.112 \\
+        208.67.222.222 208.67.220.220 8.26.56.26 8.20.247.20
+
+""".format(BIN_NAME)
+
+
+p = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
+                            prog='pingenator',
+                            description=desc.rstrip(),
+                            epilog=epi.rstrip()
+                            )
+
+p.add_argument('-V', '--version', action='version',
+               version="{} version {}".format(
+                   PROG_NAME, VERSION))
+
+p.add_argument('-v', '--verbose', action='count', default=0,
+               help="""Be verbose.  Can be supplied multiple times for
+                    increased levels of verbosity.""")
+
+#p.add_argument('-n', '--dry-run', action='store_true',
+#               help="""Don't actualy do anything, just print what would have
+#               been done.  Go
+#               through the motions, but Feature stage funcs are not
+#               executed.""")
+
+#p.add_argument('--root', metavar='ROOTDIR',
+#               help="""Specifies that we should operate on a filesystem rooted
+#               at ROOTDIR.
+#               This is similar to automake's DESTDIR variable, or srp2's
+#               SRP_ROOT_PREFIX variable""")
 
 
 
@@ -26,7 +73,20 @@ def worker(ip):
 
 
 
-if __name__ == "__main__":
+# NOTE: if we want to call this from the interpreter for testing, we'll have to
+#       forge sys.argv
+#
+def main():
+    global args
+    args = p.parse_args()
+    if args.verbose:
+        print(args)
+
+    global counter
+    counter = multiprocessing.Value('i', 0)
+    if args.verbose:
+        print(counter)
+
     # public dns servers: google, cloudflare, quad9, opendns, comodo secure dns
     ip_list = ["8.8.8.8", "8.8.4.4", "1.1.1.1", "1.0.0.1", "9.9.9.9", "149.112.112.112", "208.67.222.222", "208.67.220.220", "8.26.56.26", "8.20.247.20"]
 
@@ -35,3 +95,9 @@ if __name__ == "__main__":
     i.wait()
     
     print(counter.value, "of", len(ip_list), "reached")
+
+
+
+
+if __name__ == "__main__":
+    main()
