@@ -48,6 +48,11 @@ p.add_argument('-v', '--verbose', action='count', default=1, dest='verbosity',
 p.add_argument('-q', '--quiet', action='store_true',
                help="""Be quiet.  Only output is "N of N reached".""")
 
+# FIXME: add type=ipaddr type checking... could just check that we can encode
+#        the IP as either an IPv4 or IPv6 address
+#
+p.add_argument('ip_list', metavar='IPADDR', nargs='*',
+               help="""IP address to ping.""")
 
 
 #p.add_argument('-n', '--dry-run', action='store_true',
@@ -96,19 +101,20 @@ def main():
     if args.verbosity > 1:
         print(args)
 
+    if len(args.ip_list) == 0:
+        print("ERROR: no IPs specified")
+        sys.exit(1)
+
     global counter
     counter = multiprocessing.Value('i', 0)
     if args.verbosity > 1:
         print(counter)
 
-    # public dns servers: google, cloudflare, quad9, opendns, comodo secure dns
-    ip_list = ["8.8.8.8", "8.8.4.4", "1.1.1.1", "1.0.0.1", "9.9.9.9", "149.112.112.112", "208.67.222.222", "208.67.220.220", "8.26.56.26", "8.20.247.20"]
-
-    pool = multiprocessing.Pool(len(ip_list))
-    i = pool.map_async(worker, ip_list, chunksize=1)
+    pool = multiprocessing.Pool(len(args.ip_list))
+    i = pool.map_async(worker, args.ip_list, chunksize=1)
     i.wait()
     
-    print(counter.value, "of", len(ip_list), "reached")
+    print(counter.value, "of", len(args.ip_list), "reached")
 
 
 
