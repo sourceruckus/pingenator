@@ -74,7 +74,7 @@ p.add_argument('-d', '--dns', action='store_true', dest='use_dns_ips',
                     Comodo Secure DNS.""")
 
 p.add_argument('-e', '--exclude', action='append', metavar='IP',
-               dest='exclude_ips',
+               dest='exclude_ips', default=[],
                help="""Do not ping specified IP, even if it's been specified.
                     This can be used to exclude IPs added via the --dns flag.
                     Can be specified multiple times.""")
