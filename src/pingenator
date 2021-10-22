@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import argparse
+import math
 import multiprocessing
 import subprocess
 import sys
@@ -26,9 +27,10 @@ Copyright (C) 2021 Michael D Labriola <veggiemike@sourceruckus.org>
 epi = """\
 For example, to send 4 pings in parallel to each public DNS server provided by
 Google, Cloudflare, Quad9, OpenDNS, and Comodo Secure DNS, exluding 8.8.8.8,
-and get the results all whithin about 1 second:
+treating a reply-rate of 90% as success, and get the results all whithin about
+1 second:
 
-    {} --dns --exclude 8.8.8.8 --count 4
+    {} --dns --exclude 8.8.8.8 --count 4 --success 90
 
 """.format(BIN_NAME)
 
@@ -81,6 +83,12 @@ p.add_argument('-e', '--exclude', action='append', metavar='IP',
 
 p.add_argument('-c', '--count', metavar='N', type=int, default=1,
                help="""Send N ping packets.  Default is 1.""")
+
+p.add_argument('-s', '--success', metavar='PERCENT', type=int, default=0,
+               dest='success_percent',
+               help="""Return successfully if percentange reached is at least
+                    PERCENT.  Special case 0 means success if any responses are
+                    received.  Default is 0.""")
 
 
 def check_ip(ip):
@@ -135,8 +143,15 @@ def main():
     for i in range(args.count-1):
         args.ip_list += args.ip_list
 
+    if args.success_percent == 0:
+        args.success_count = 1
+    else:
+        # number of packets to consider success, round up
+        args.success_count = math.ceil(len(args.ip_list) * args.success_percent/100.0)
+
     if args.verbosity > 1:
         print("final ip_list:", args.ip_list)
+        print("sending", len(args.ip_list), "packets, treating at least", args.success_count, "replies as success.")
 
     global counter
     counter = multiprocessing.Value('i', 0)
@@ -146,11 +161,17 @@ def main():
     pool = multiprocessing.Pool(len(args.ip_list))
     i = pool.map_async(worker, args.ip_list, chunksize=1)
     i.wait()
-    
-    print(counter.value, "of", len(args.ip_list), "reached")
 
+    if counter.value >= args.success_count:
+        msg = "SUCCESS:"
+        retval=0
+    else:
+        msg = "FAIL:"
+        retval=1
+    print(msg, counter.value, "of", len(args.ip_list), "reached")
+    return retval
 
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
