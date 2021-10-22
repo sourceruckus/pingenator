@@ -73,6 +73,12 @@ p.add_argument('-d', '--dns', action='store_true', dest='use_dns_ips',
                     provided by Google, Cloudflare, Quad9, OpenDNS, and
                     Comodo Secure DNS.""")
 
+p.add_argument('-e', '--exclude', action='append', metavar='IP',
+               dest='exclude_ips',
+               help="""Do not ping specified IP, even if it's been specified.
+                    This can be used to exclude IPs added via the --dns flag.
+                    Can be specified multiple times.""")
+
 
 def check_ip(ip):
     status = subprocess.run(["ping", "-w1", ip], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -110,6 +116,14 @@ def main():
         if args.verbosity > 1:
             print("adding to ip_list:", dns_ips)
         args.ip_list.extend(dns_ips)
+
+    for ip in args.exclude_ips:
+        if args.verbosity > 1:
+            print("removing from ip_list:", ip)
+        try:
+            args.ip_list.remove(ip)
+        except:
+            pass
 
     if len(args.ip_list) == 0:
         print("ERROR: no IPs specified")

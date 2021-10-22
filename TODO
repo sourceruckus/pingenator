@@ -6,5 +6,3 @@ how many pings
 * --all or --any or --half
 By default, returns success if ANY ips are reachable.  --all switches to only
 if all are reachable.  --half if at least half of the pings get a response.
-* -e --exclude
-do not ping specified IPs, even if they're specified (i.e., via the --dns built-ins)
