@@ -24,11 +24,11 @@ Copyright (C) 2021 Michael D Labriola <veggiemike@sourceruckus.org>
 """.format(PROG_NAME, VERSION)
 
 epi = """\
-For example, to check reachability of public DNS servers provided by Google,
-Cloudflare, Quad9, OpenDNS, and Comodo Secure DNS:
+For example, to send 4 pings in parallel to each public DNS server provided by
+Google, Cloudflare, Quad9, OpenDNS, and Comodo Secure DNS, exluding 8.8.8.8,
+and get the results all whithin about 1 second:
 
-    {} 8.8.8.8 8.8.4.4 1.1.1.1 1.0.0.1 9.9.9.9 149.112.112.112 \\
-        208.67.222.222 208.67.220.220 8.26.56.26 8.20.247.20
+    {} --dns --exclude 8.8.8.8 --count 4
 
 """.format(BIN_NAME)
 
@@ -79,6 +79,9 @@ p.add_argument('-e', '--exclude', action='append', metavar='IP',
                     This can be used to exclude IPs added via the --dns flag.
                     Can be specified multiple times.""")
 
+p.add_argument('-c', '--count', metavar='N', type=int, default=1,
+               help="""Send N ping packets.  Default is 1.""")
+
 
 def check_ip(ip):
     status = subprocess.run(["ping", "-w1", ip], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -128,6 +131,12 @@ def main():
     if len(args.ip_list) == 0:
         print("ERROR: no IPs specified")
         sys.exit(1)
+
+    for i in range(args.count-1):
+        args.ip_list += args.ip_list
+
+    if args.verbosity > 1:
+        print("final ip_list:", args.ip_list)
 
     global counter
     counter = multiprocessing.Value('i', 0)
