@@ -1,2 +1,31 @@
 -*- mode: org -*-
 
+* add some safety check to --count
+If we don't do any checking, this could accidentally turn into a fork bomb...
+--dns --count=100 for example is going to spawn 1000 ping processess at the
+same time.  Perhaps add num_cpus*10 limit overridable via a --force argument.
+
+* validate IPADDR arguments
+And potentially resolve them to check for duplicates.  The downside to
+resolving them is that then the raw IPs will be listed in ping output even if
+the user supplied hostnames.
+
+* -w1 vs -c1 -w1 vs -c1 -W1
+I've historically used -w1 to check reachability in a script, but I have seen 2
+pings come back once in a while on a system under load.  I assume this is
+because the 1 second timeout gets scheduled late, on the order of 1.25 seconds,
+and in that extra .25 seconds a 2nd ping is send and received.
+
+I normally wouldn't care... but if we're doing all kinds of calculations based
+on the assumption that each process sends exactly 1 ping, we should probably
+make sure that's the reality.
+
+Not really sure I understant the difference between -w and -W
+
+* actually finish build system
+We've got some sedding to do, perhaps some tool checking via configure.ac
+(e.g., python3, ping, ip).  Do we need to check ping for existence of -c and
+-w?  I suppose we should...  does busybox ping support both?
+
+Currently not using anything that requires Python >= 3.7 because my initial
+development was on Ubuntu 18.04.

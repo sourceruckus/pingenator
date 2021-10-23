@@ -1,4 +1,15 @@
 #!/usr/bin/python3
+#
+# Pingenator - a super ping tool to get you places
+#
+# Copyright 2021 Michael D Labriola <veggiemike@sourceruckus.org>
+#
+# Licensed under the GPLv3. See the file COPYING for details.
+#
+# Pingenator's primary use-case is checking internet connectivity by pinging a
+# list of hosts.  The pinging is done in parallel, so you can ping a dozen
+# hosts once and have the results in 1 second instead of 12.
+#
 
 import argparse
 import atexit
@@ -32,11 +43,11 @@ Google, Cloudflare, Quad9, OpenDNS, and Comodo Secure DNS, exluding 8.8.8.8,
 using 10.1.99.1 as an alterate gateway, treating a reply-rate of 90% as
 success, and get the results all whithin about 1 second:
 
-    {} --dns --exclude 8.8.8.8 --count 4 --success 90 --gateway 10.1.99.1
+  {} --dns --exclude 8.8.8.8 --count 4 --success 90 --gateway 10.1.99.1
 
 Or, to ping a couple hosts continuously using an alterate gateway:
 
-    {} --gateway 10.1.99.1 8.8.8.8 8.8.4.4 1.1.1.1
+  {} --gateway 10.1.99.1 8.8.8.8 8.8.4.4 1.1.1.1
 
 """.format(BIN_NAME, BIN_NAME)
 
