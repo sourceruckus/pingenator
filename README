@@ -55,4 +55,4 @@ second:
 
 Or, to ping a couple hosts continuously using an alterate gateway:
 
-  pingenator --gateway 10.1.99.1 8.8.8.8 8.8.4.4 1.1.1.1
+  pingenator -g 192.168.5.1 -c0 8.8.4.4 1.1.1.1
