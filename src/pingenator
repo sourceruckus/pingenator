@@ -27,10 +27,12 @@ counter = None
 # here
 args = None
 
-# FIXME: add build system glue to sed these values in prior to install
+# FIXME: add build system glue to sed these values in prior to install along
+#        with path to python interpreter
+#
 PROG_NAME="Pingenator"
 BIN_NAME="pingenator"
-VERSION="0.1.0"
+VERSION="0.2.0-dev"
 
 desc = """\
 {} v{} - a super ping tool to get you places
