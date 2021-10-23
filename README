@@ -9,6 +9,8 @@ pinging a list of hosts.  The pinging is done in parallel, so you can
 ping a dozen hosts once and have the results in 1 second instead of
 12.
 
+Get the latest and greatest from https://github.com/sourceruckus/pingenator.
+
 usage: pingenator [-h] [-V] [-v] [-q] [-d] [-e IP] [-c N] [-s PERCENT] [-g IP]
                   [IPADDR [IPADDR ...]]
 

@@ -3,9 +3,10 @@
 For the latest and greatest, see https://github.com/sourceruckus/pingenator/commits/master.
 
 * v0.1.0
-Tagger: not yet
-Date: not yet
+Tagger: Michael D Labriola <veggiemike@sourceruckus.org>
+Date:   Sat Oct 23 13:14:02 EDT 2021
 
 Pingenator v0.1.0
 
-Initial release.
+Initial release.  Everything seems to be workable.  There's still some cleanup
+and minor tweaks to be made, but certainly good enough for an initial release.
