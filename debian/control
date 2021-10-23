@@ -4,7 +4,7 @@ Section: utils
 Priority: optional
 Architecture: __arch__
 Installed-Size: __size__
-Depends: python3
+Depends: python3, iputils-ping, iproute2
 Maintainer: Michael D Labriola <veggiemike@sourceruckus.org>
 Homepage: https://github.com/sourceruckus/pingenator
 Description: Pingenator - a super ping tool to get you places
