@@ -1,4 +1,6 @@
 -*- mode: org -*-
 
-* --gateway=IP
-add IP as route to each IP in ip_list prior to pinging, take it out when done (no matter what!)
+* --follow or --keep-pinging or --continuous
+So, given that --gateway is super handy, it might be nice to allow for simple
+pinging (i.e., single process w/out -c1).  Probably need it to be mutually
+exclusive from the spawn a million single-ping processess way of doing things.

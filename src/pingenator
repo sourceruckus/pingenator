@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import argparse
+import atexit
 import math
 import multiprocessing
 import subprocess
@@ -90,6 +91,18 @@ p.add_argument('-s', '--success', metavar='PERCENT', type=int, default=0,
                     PERCENT.  Special case 0 means success if any responses are
                     received.  Default is 0.""")
 
+p.add_argument('-g', '--gateway', metavar='IP',
+               help="""Use the specified gateway IP for outgoing pings.  This
+                    causes a static route to be added to the system for each IP
+                    to be pinged, so admin privileges are required.  Routes are
+                    removed at the end, so there shouldn't be any lasting
+                    effect, but care should be taken that you don't
+                    accidentally make an important host unreachable while
+                    testing (i.e., don't use a gateway to test an alternate WAN
+                    interface pinging the DNS server your system is currently
+                    using).""")
+
+
 
 def check_ip(ip):
     status = subprocess.run(["ping", "-w1", ip], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -111,6 +124,16 @@ def worker(ip):
             print(status.stdout.decode())
 
 
+@atexit.register
+def rm_routes():
+    for go in args.rm_routes:
+        if args.verbosity > 0:
+            print(go)
+        # keep going if there's an error, we're cleaning up
+        subprocess.run(go.split())
+    if args.verbosity > 2:
+        subprocess.run(["ip", "route"])
+
 
 # NOTE: if we want to call this from the interpreter for testing, we'll have to
 #       forge sys.argv
@@ -123,11 +146,13 @@ def main():
     if args.verbosity > 1:
         print(args)
 
+    # append dns_ips if needed
     if args.use_dns_ips:
         if args.verbosity > 1:
             print("adding to ip_list:", dns_ips)
         args.ip_list.extend(dns_ips)
 
+    # remove excluded ips from ip_list
     for ip in args.exclude_ips:
         if args.verbosity > 1:
             print("removing from ip_list:", ip)
@@ -136,14 +161,36 @@ def main():
         except:
             pass
 
+    # make sure we have an ip_list
     if len(args.ip_list) == 0:
         print("ERROR: no IPs specified")
         sys.exit(1)
 
+    # add routes if needed
+    args.rm_routes = []
+    if args.verbosity > 2:
+        subprocess.run(["ip", "route"])
+    if args.gateway:
+        for ip in args.ip_list:
+            go = "ip route add {}/32 via {}".format(ip, args.gateway)
+            if args.verbosity > 0:
+                print(go)
+            subprocess.run(go.split()).check_returncode()
+            # populate our rm_routes list so we can clean things up later
+            #
+            # NOTE: This list is shoved into global args so that our atexit
+            #       handler can remove the routes.
+            #
+            args.rm_routes.append("ip route del {}/32 via {}".format(ip, args.gateway))
+    if args.verbosity > 2:
+        subprocess.run(["ip", "route"])
+
+    # multiply ip_list if needed
     x = args.ip_list[:]
     for i in range(args.count-1):
         args.ip_list += x
 
+    # calculate success_count
     if args.success_percent == 0:
         args.success_count = 1
     else:
@@ -154,15 +201,19 @@ def main():
         print("final ip_list:", args.ip_list)
         print("sending", len(args.ip_list), "packets, treating at least", args.success_count, "replies as success.")
 
+    # create the counter object
     global counter
     counter = multiprocessing.Value('i', 0)
     if args.verbosity > 1:
         print(counter)
 
+    # create a process pool
     pool = multiprocessing.Pool(len(args.ip_list))
     i = pool.map_async(worker, args.ip_list, chunksize=1)
+    # wait for them all to finish
     i.wait()
 
+    # compare to success_count
     if counter.value >= args.success_count:
         msg = "SUCCESS:"
         retval=0
