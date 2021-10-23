@@ -28,12 +28,16 @@ Copyright (C) 2021 Michael D Labriola <veggiemike@sourceruckus.org>
 epi = """\
 For example, to send 4 pings in parallel to each public DNS server provided by
 Google, Cloudflare, Quad9, OpenDNS, and Comodo Secure DNS, exluding 8.8.8.8,
-treating a reply-rate of 90% as success, and get the results all whithin about
-1 second:
+using 10.1.99.1 as an alterate gateway, treating a reply-rate of 90% as
+success, and get the results all whithin about 1 second:
 
-    {} --dns --exclude 8.8.8.8 --count 4 --success 90
+    {} --dns --exclude 8.8.8.8 --count 4 --success 90 --gateway 10.1.99.1
 
-""".format(BIN_NAME)
+Or, to ping a couple hosts continuously using an alterate gateway:
+
+    {} --gateway 10.1.99.1 8.8.8.8 8.8.4.4 1.1.1.1
+
+""".format(BIN_NAME, BIN_NAME)
 
 
 # public dns servers
@@ -83,7 +87,8 @@ p.add_argument('-e', '--exclude', action='append', metavar='IP',
                     Can be specified multiple times.""")
 
 p.add_argument('-c', '--count', metavar='N', type=int, default=1,
-               help="""Send N ping packets.  Default is 1.""")
+               help="""Send N ping packets.  Default is 1.  Specifying 0 will
+                    cause each ping subprocess to ping continiously.""")
 
 p.add_argument('-s', '--success', metavar='PERCENT', type=int, default=0,
                dest='success_percent',
@@ -105,7 +110,15 @@ p.add_argument('-g', '--gateway', metavar='IP',
 
 
 def check_ip(ip):
-    status = subprocess.run(["ping", "-w1", ip], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    go = ["ping"]
+    if args.count > 0:
+        # FIXME: '-w1' vs '-c1 -W1'
+        go.append("-w1")
+        out = subprocess.PIPE
+    else:
+        out = None
+    go.append(ip)
+    status = subprocess.run(go, stdout=out, stderr=out)
     if status.returncode == 0:
         return True, status
     return False, status
@@ -126,6 +139,11 @@ def worker(ip):
 
 @atexit.register
 def rm_routes():
+    # if we haven't initialized args or added rm_routes to it, don't blow up,
+    # just return quietly.
+    if not args or "rm_routes" not in args:
+        return
+
     for go in args.rm_routes:
         if args.verbosity > 0:
             print(go)
@@ -187,8 +205,9 @@ def main():
 
     # multiply ip_list if needed
     x = args.ip_list[:]
-    for i in range(args.count-1):
-        args.ip_list += x
+    if args.count > 0:
+        for i in range(args.count-1):
+            args.ip_list += x
 
     # calculate success_count
     if args.success_percent == 0:
