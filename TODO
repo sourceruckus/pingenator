@@ -1,3 +1,2 @@
 -*- mode: org -*-
 
-* catch KeyboardInterrupt when --count=0

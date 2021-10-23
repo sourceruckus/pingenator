@@ -4,6 +4,7 @@ import argparse
 import atexit
 import math
 import multiprocessing
+import signal
 import subprocess
 import sys
 
@@ -153,6 +154,11 @@ def rm_routes():
         subprocess.run(["ip", "route"])
 
 
+def sigint_handler(signum, frame):
+    sys.exit(1)
+
+
+
 # NOTE: if we want to call this from the interpreter for testing, we'll have to
 #       forge sys.argv
 #
@@ -208,6 +214,11 @@ def main():
     if args.count > 0:
         for i in range(args.count-1):
             args.ip_list += x
+    else:
+        # we're going to ping continuously, catch KeyboardInterrupt so the user
+        # doesn't have to look at a giant traceback when they ctrl-c to kill
+        # the ping
+        signal.signal(signal.SIGINT, sigint_handler)
 
     # calculate success_count
     if args.success_percent == 0:
