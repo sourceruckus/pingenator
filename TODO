@@ -29,3 +29,13 @@ We've got some sedding to do, perhaps some tool checking via configure.ac
 
 Currently not using anything that requires Python >= 3.7 because my initial
 development was on Ubuntu 18.04.
+
+* random sleep in sigint_handler
+Let's try adding a random, sub-second sleep in the sigint_handler as an attempt
+to keep ping summary statistics output by the subprocesses from being
+interleaved.  Could also do .1s incrementing global counter for subprocs.
+
+Actually, we need slightly better than this... the subprocs and main proc are
+all racing to sys.exit()... once one of them gets there, you don't get any more
+output.  Pretty sure that's what I'm seeing when testing -c0 with more than 3
+IPs (I don't get all the stats, just the first 2 usually).
