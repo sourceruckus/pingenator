@@ -33,7 +33,7 @@ args = None
 #
 PROG_NAME="Pingenator"
 BIN_NAME="pingenator"
-VERSION="0.2.0-dev"
+VERSION="0.2.0"
 
 desc = """\
 {} v{} - a super ping tool to get you places
@@ -65,7 +65,7 @@ dns_ips = ["8.8.8.8", "8.8.4.4", # google
 
 
 p = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
-                            prog='pingenator',
+                            prog=BIN_NAME,
                             description=desc.rstrip(),
                             epilog=epi.rstrip()
                             )

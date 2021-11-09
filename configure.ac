@@ -1,5 +1,5 @@
 AC_PREREQ([2.65])
-AC_INIT([pingenator], [0.2.0-dev], [veggiemike@sourceruckus.org])
+AC_INIT([pingenator], [0.2.0], [veggiemike@sourceruckus.org])
 
 AM_INIT_AUTOMAKE([dist-xz no-dist-gzip foreign])
 

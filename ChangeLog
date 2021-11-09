@@ -2,6 +2,15 @@
 
 For the latest and greatest, see https://github.com/sourceruckus/pingenator/commits/master.
 
+* v0.2.0
+Tagger: Michael D Labriola <veggiemike@sourceruckus.org>
+Date:   Tue Nov  9 11:19:29 EST 2021
+
+Pingenator v0.2.0
+
+Added sanity check to keep --count from turning into a fork bomb and fixed
+problem where occasionally 2 responses get received when system is under load.
+
 * v0.1.0
 Tagger: Michael D Labriola <veggiemike@sourceruckus.org>
 Date:   Sat Oct 23 13:14:02 EDT 2021
