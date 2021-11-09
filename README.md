@@ -12,6 +12,7 @@ ping a dozen hosts once and have the results in 1 second instead of
 
 Get the latest and greatest from https://github.com/sourceruckus/pingenator.
 
+<pre>
 usage: pingenator [-h] [-V] [-v] [-q] [-d] [-e IP] [-c N] [-s PERCENT] [-g IP]
                   [IPADDR [IPADDR ...]]
 
@@ -57,3 +58,4 @@ second:
 Or, to ping a couple hosts continuously using an alterate gateway:
 
   pingenator -g 192.168.5.1 -c0 8.8.4.4 1.1.1.1
+</pre>
