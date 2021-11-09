@@ -15,6 +15,7 @@ import argparse
 import atexit
 import math
 import multiprocessing
+import os
 import signal
 import subprocess
 import sys
@@ -120,6 +121,11 @@ p.add_argument('-g', '--gateway', metavar='IP',
                     testing (i.e., don't use a gateway to test an alternate WAN
                     interface pinging the DNS server your system is currently
                     using).""")
+
+p.add_argument('-f', '--force', action='store_true',
+               help="""Force operation, when you've been warned that bad things
+                    might happen (e.g., too many subprocs).""")
+
 
 
 
@@ -243,6 +249,12 @@ def main():
     if args.verbosity > 1:
         print("final ip_list:", args.ip_list)
         print("sending", len(args.ip_list), "packets, treating at least", args.success_count, "replies as success.")
+
+    # sanity check
+    if len(args.ip_list) > os.cpu_count()*10 and not args.force:
+        print("ERROR: total number of subprocs greater than", os.cpu_count(),
+              "* 10.  Use --force to execute anyway, but you've been warned")
+        sys.exit(1)
 
     # create the counter object
     global counter

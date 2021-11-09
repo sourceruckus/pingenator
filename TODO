@@ -1,10 +1,5 @@
 -*- mode: org -*-
 
-* add some safety check to --count
-If we don't do any checking, this could accidentally turn into a fork bomb...
---dns --count=100 for example is going to spawn 1000 ping processess at the
-same time.  Perhaps add num_cpus*10 limit overridable via a --force argument.
-
 * validate IPADDR arguments
 And potentially resolve them to check for duplicates.  The downside to
 resolving them is that then the raw IPs will be listed in ping output even if
