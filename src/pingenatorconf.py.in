@@ -1,0 +1,7 @@
+pkg = "@PACKAGE_NAME@"
+prog = "@PACKAGE@"
+version = "@PACKAGE_VERSION@"
+version_major = @PINGENATOR_MAJOR_VERSION@
+version_minor = @PINGENATOR_MINOR_VERSION@
+version_micro = @PINGENATOR_MICRO_VERSION@
+version_devtag = "@PINGENATOR_DEVTAG@"

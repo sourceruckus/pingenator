@@ -42,13 +42,16 @@ $(DEBFILE): $(DEBCTRL)
 	rm -rf $(DPKGDIR)
 
 $(DPKGDIR):
+	./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var
+	$(MAKE) clean
+	$(MAKE) all
 	$(MAKE) DESTDIR=$@ install
 
 $(DEBDIR): $(DPKGDIR)
 	$(MKDIR_P) $@
 
 $(DEBSIZE): $(DEBDIR)
-	du -hs $(DPKGDIR) | awk '{print $$1}' > $@
+	du -s $(DPKGDIR) | awk '{print $$1}' > $@
 
 $(DEBARCH): $(DEBDIR)
 	dpkg-architecture --query DEB_HOST_ARCH > $@

@@ -21,22 +21,5 @@ Makefile.in
 /test-driver
 
 # built files
-/src/initramfs
-/src/initramfs.cpio.xz
-/src/ruckusrd.conf
-/subprojects/.build*
-/subprojects/busybox.tar
-/subprojects/dropbear.tar
-/subprojects/e2fsprogs.tar
-/subprojects/efibootmgr.tar
-/subprojects/eudev.tar
-/subprojects/fw.sqsh
-/subprojects/lvm2.tar
-/subprojects/mdadm.tar
-/subprojects/rsync.tar
-/subprojects/squashfs-tools.tar
-/subprojects/syslinux
-/subprojects/syslinux-*.tar.*
-/subprojects/syslinux.tar
-/subprojects/ucode.img
-/subprojects/zfs.tar
+/src/__pycache__
+/src/pingenatorconf.py
