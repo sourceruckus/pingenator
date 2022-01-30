@@ -1,7 +1,7 @@
 Pingenator - a super ping tool to get you places
 ================================================
 
-Copyright 2021 Michael D Labriola <veggiemike@sourceruckus.org>
+Copyright 2022 Michael D Labriola <veggiemike@sourceruckus.org>
 
 Licensed under the GPLv3. See the file COPYING for details. 
 

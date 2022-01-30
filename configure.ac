@@ -3,7 +3,7 @@ AC_PREREQ([2.65])
 m4_define(pingenator_major_version, 0)
 m4_define(pingenator_minor_version, 3)
 m4_define(pingenator_micro_version, 0)
-m4_define(pingenator_devtag, [dev])
+m4_define(pingenator_devtag, [])
 m4_ifnblank(pingenator_devtag,
 	[m4_define(pingenator_version, pingenator_major_version.pingenator_minor_version.pingenator_micro_version-pingenator_devtag)],
 	[m4_define(pingenator_version, pingenator_major_version.pingenator_minor_version.pingenator_micro_version)])
@@ -28,7 +28,9 @@ AC_PROG_LN_S
 #
 # FIXME: need to double check functionality used and get this
 #        correct...  original development was on Ubuntu 18.04, which
-#        had python 3.6, so that's a starting point.
+#        had python 3.6, so that's a starting point.  I do recall
+#        wanting to use something that needed 3.7 or 3.8... but I
+#        don't remember what it was.
 #
 min_python=3.6.0
 AM_PATH_PYTHON($min_python)
@@ -91,6 +93,8 @@ m4_foreach_w([P], NEEDED_PROGS,
      AC_MSG_ERROR([Could not find P]))
   ])
 
+
+# FIXME: check ping for -w and -c?
 
 AC_CONFIG_FILES([Makefile
 		 src/Makefile
