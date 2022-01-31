@@ -4,11 +4,11 @@ For the latest and greatest, see https://github.com/sourceruckus/pingenator/comm
 
 * v0.3.0
 Tagger: Michael D Labriola <veggiemike@sourceruckus.org>
-Date:   Sun Jan 30 17:38:58 EST 2022
+Date:   Mon Jan 31 15:17:02 EST 2022
 
 Pingenator v0.3.0
 
-Build system overhaul.
+Build system overhaul, including help2man generated manpage and dpkg target.
 
 * v0.2.0
 Tagger: Michael D Labriola <veggiemike@sourceruckus.org>
