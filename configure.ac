@@ -82,7 +82,9 @@ fi
 
 # check for needed programs
 AC_DEFUN([NEEDED_PROGS],
-	 [dnl bash is a special case, see below
+	 [dnl needed at build-time
+	  help2man
+	  dnl needed at run-time
 	  ping
 	  ip
 	 ])

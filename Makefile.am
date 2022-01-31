@@ -8,6 +8,8 @@ EXTRA_DIST =
 EXTRA_DIST += $(top_docs)
 EXTRA_DIST += $(deb_examples)
 
+man1_MANS = pingenator.1
+
 install-data-local:
 	$(MKDIR_P) $(DESTDIR)$(docdir)/debian
 	cp -r $(top_docs:%=$(srcdir)/%) $(DESTDIR)$(docdir)
@@ -16,6 +18,9 @@ install-data-local:
 uninstall-local:
 	rm -f $(top_docs:%=$(DESTDIR)$(docdir)/%)
 	rm -f $(deb_examples:%=$(DESTDIR)$(docdir)/%)
+
+pingenator.1:
+	help2man -o $@ ./src/pingenator
 
 
 # i know this isn't the right way to do this... but it's how i've been

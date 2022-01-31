@@ -21,5 +21,6 @@ Makefile.in
 /test-driver
 
 # built files
+/pingenator.1
 /src/__pycache__
 /src/pingenatorconf.py
