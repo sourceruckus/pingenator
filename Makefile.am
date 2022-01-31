@@ -20,7 +20,7 @@ uninstall-local:
 	rm -f $(deb_examples:%=$(DESTDIR)$(docdir)/%)
 
 pingenator.1:
-	help2man -o $@ ./src/pingenator
+	help2man -o $@ --no-info ./src/pingenator
 
 
 # i know this isn't the right way to do this... but it's how i've been

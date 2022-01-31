@@ -38,8 +38,12 @@ counter = None
 args = None
 
 desc = """\
-{} v{} - a super ping tool to get you places
+{} v{} - a super ping tool to get you places.
 Copyright (C) 2022 Michael D Labriola <veggiemike@sourceruckus.org>
+
+Pingenator's primary use-case is checking internet connectivity by pinging a
+list of hosts.  The pinging is done in parallel, so you can ping a dozen hosts
+once and have the results in 1 second instead of 12.
 """.format(config.pkg, config.version)
 
 epi = """\
@@ -73,7 +77,7 @@ p = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter
                             )
 
 p.add_argument('-V', '--version', action='version',
-               version="{} version {}".format(config.pkg, config.version))
+               version="{} {}".format(config.pkg, config.version))
 
 p.add_argument('-v', '--verbose', action='count', default=1, dest='verbosity',
                help="""Be verbose.  Can be supplied multiple times for
