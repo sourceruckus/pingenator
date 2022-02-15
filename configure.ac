@@ -104,6 +104,29 @@ AC_CONFIG_FILES([Makefile
 		 ])
 AC_OUTPUT
 
+
+# Create a fully expanded variable out of one with embedded path variables.
+#
+# NOTE: This might not be the best way to fully expand the variable, but it
+#       works for me.  It might be portable.  It might not.  Fingers
+#       crossed.
+#
+# NOTE: This only works if we make sure $prefix has been set already...
+#       otherwise we end up with NONE in our path.
+#
+expandit()
+{
+  test "$prefix" = "NONE" && prefix=/usr/local
+  result=$1
+  while :; do
+    temp=`eval echo $result`
+    test "$temp" = "$result" && break
+    result=$temp
+  done
+  echo $result
+}
+
+
 echo
 echo
 echo
@@ -119,6 +142,5 @@ echo "  Version..............: $PYTHON_VERSION"
 echo
 echo "Installation:"
 echo "  prefix...............: $prefix"
-echo "  exec_prefix..........: $exec_prefix"
-echo "  pyexecdir............: $pyexecdir"
+echo "  pyexecdir............: `expandit $pyexecdir`"
 echo
