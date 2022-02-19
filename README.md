@@ -5,10 +5,9 @@ Copyright 2021-2022 Michael D Labriola <veggiemike@sourceruckus.org>
 
 Licensed under the GPLv3. See the file COPYING for details. 
 
-Pingenator's primary use-case is checking internet connectivity by
-pinging a list of hosts.  The pinging is done in parallel, so you can
-ping a dozen hosts once and have the results in 1 second instead of
-12.
+Pingenator's primary use-case is checking internet connectivity by pinging a
+list of hosts.  The pinging is done in parallel, so you can ping a dozen hosts
+once and have the results in 1 second instead of 12.
 
 Get the latest and greatest from https://github.com/sourceruckus/pingenator.
 
