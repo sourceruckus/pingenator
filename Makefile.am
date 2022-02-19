@@ -19,8 +19,8 @@ uninstall-local:
 	rm -f $(top_docs:%=$(DESTDIR)$(docdir)/%)
 	rm -f $(deb_examples:%=$(DESTDIR)$(docdir)/%)
 
-pingenator.1:
-	help2man -o $@ --no-info ./src/pingenator
+pingenator.1: config.log ./src/pingenator pingenator.1.include
+	help2man -o $@ --no-info --include pingenator.1.include ./src/pingenator
 
 
 # i know this isn't the right way to do this... but it's how i've been
