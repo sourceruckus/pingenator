@@ -1,4 +1,2 @@
 -*- mode: org -*-
 
-* fix configure.ac FIXMEs
-Specifically, the python version required.

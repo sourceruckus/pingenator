@@ -2,6 +2,20 @@
 
 For the latest and greatest, see https://github.com/sourceruckus/pingenator/commits/master.
 
+* v1.0.0
+Tagger: Michael D Labriola <veggiemike@sourceruckus.org>
+Date:   TBD
+
+Pingenator v1.0.0
+
+Finished off the last couple low-priority TODO items, and didn't come up with
+anything else to add, leading us to an earlier than expected feature complete
+1.0 release!
+
+- Added type checking to IP address command line arguments.
+- Defined minimum supported Pything version.
+- Fixed truncated output when sending SIGINT to infinite ping (w/ -c0).
+
 * v0.3.0
 Tagger: Michael D Labriola <veggiemike@sourceruckus.org>
 Date:   Mon Jan 31 15:17:02 EST 2022

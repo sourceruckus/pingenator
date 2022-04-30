@@ -1,9 +1,9 @@
 AC_PREREQ([2.65])
 
-m4_define(pingenator_major_version, 0)
-m4_define(pingenator_minor_version, 4)
+m4_define(pingenator_major_version, 1)
+m4_define(pingenator_minor_version, 0)
 m4_define(pingenator_micro_version, 0)
-m4_define(pingenator_devtag, [dev])
+m4_define(pingenator_devtag, [rc1])
 m4_ifnblank(pingenator_devtag,
 	[m4_define(pingenator_version, pingenator_major_version.pingenator_minor_version.pingenator_micro_version-pingenator_devtag)],
 	[m4_define(pingenator_version, pingenator_major_version.pingenator_minor_version.pingenator_micro_version)])
