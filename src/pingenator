@@ -179,9 +179,29 @@ def rm_routes():
         subprocess.run(["ip", "route"])
 
 
+# NOTE: This handler is only registered in the main process (and only when
+#       pinging infinitely w/ -c0), so we can be sure it only executes once
+#       (and in the correct context).
+#
 def sigint_handler(signum, frame):
-    sys.exit(1)
+    #print("SIGINT:", multiprocessing.active_children())
+    # terminate and join all the worker procs in our pool
+    pool.terminate()
+    pool.join()
 
+    # and now exit
+    #
+    # NOTE: It looks like terminating/joining everything does not interrupt our
+    #       wait() call below... Which is actually fine for us, because the
+    #       SUCCESS/FAIL and stats that get generated normally would be
+    #       confusing when using -c0.  We just exit here and avoid it.
+    #
+    sys.exit(0)
+
+
+# this is used to block the SIGINT handler from firing in the subprocesses.
+def init_worker():
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
 
 # NOTE: if we want to call this from the interpreter for testing, we'll have to
@@ -269,7 +289,8 @@ def main():
         print(counter)
 
     # create a process pool
-    pool = multiprocessing.Pool(len(args.ip_list))
+    global pool
+    pool = multiprocessing.Pool(len(args.ip_list), init_worker)
     i = pool.map_async(worker, args.ip_list, chunksize=1)
     # wait for them all to finish
     i.wait()
