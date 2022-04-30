@@ -19,8 +19,23 @@ uninstall-local:
 	rm -f $(top_docs:%=$(DESTDIR)$(docdir)/%)
 	rm -f $(deb_examples:%=$(DESTDIR)$(docdir)/%)
 
-pingenator.1: config.log ./src/pingenator pingenator.1.include
-	help2man -o $@ --no-info --include pingenator.1.include ./src/pingenator
+# NOTE: this is super wonky.  had to trick the build system into
+#       making a copy of my executable in the builddir so i can run
+#       help2man against it.  normally, you'd run it against the
+#       srcdir but my script loads a generated config file that only
+#       exists in builddir.
+#
+$(builddir)/src/pingenatorFOO:
+	cp $(srcdir)/src/pingenator $@
+
+distclean-local:
+	rm -f $(builddir)/src/pingenatorFOO
+	rm -rf $(builddir)/src/__pycache__
+	rm -rf $(builddir)/pingenator.1
+
+pingenator.1: $(builddir)/src/pingenatorFOO config.log
+	help2man -o $@ --no-info $<
+	rm -f $<
 
 
 # i know this isn't the right way to do this... but it's how i've been
