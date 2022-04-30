@@ -26,13 +26,12 @@ AC_PROG_LN_S
 
 # check for python
 #
-# FIXME: need to double check functionality used and get this
-#        correct...  original development was on Ubuntu 18.04, which
-#        had python 3.6, so that's a starting point.  I do recall
-#        wanting to use something that needed 3.7 or 3.8... but I
-#        don't remember what it was.
+# NOTE: Things should work as far back as 3.5 (when subprocess was
+#       added), but original development was on Ubuntu 18.04 (which
+#       had python 3.6) and anything older than that hasn't been
+#       tested.
 #
-min_python=3.6.0
+min_python=3.5.0
 AM_PATH_PYTHON($min_python)
 
 # check for required python modules
