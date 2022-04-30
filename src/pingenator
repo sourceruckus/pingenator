@@ -13,10 +13,12 @@
 
 import argparse
 import atexit
+import ipaddress
 import math
 import multiprocessing
 import os
 import signal
+import socket
 import subprocess
 import sys
 
@@ -61,6 +63,15 @@ Or, to ping a couple hosts continuously using an alterate gateway:
 """.format(config.prog, config.prog)
 
 
+# for validating ip address parameters
+def ipaddr(ip):
+    try:
+        ipaddress.ip_address(socket.gethostbyname(ip))
+    except Exception as e:
+        raise TypeError("Invalid IP address: {}".format(ip))
+    return ip
+
+
 # public dns servers
 dns_ips = ["8.8.8.8", "8.8.4.4", # google
            "1.1.1.1", "1.0.0.1", # cloudflare
@@ -86,14 +97,7 @@ p.add_argument('-v', '--verbose', action='count', default=1, dest='verbosity',
 p.add_argument('-q', '--quiet', action='store_true',
                help="""Be quiet.  Only output is "N of N reached".""")
 
-# FIXME: add type=ipaddr type checking... could just check that we can encode
-#        the IP as either an IPv4 or IPv6 address, but we'll have to allow dns
-#        resolution too
-#
-#        this would be really nice, because spotting a typo in the output after
-#        waiting a few seconds will be hard on tired eyes.
-#
-p.add_argument('ip_list', metavar='IPADDR', nargs='*',
+p.add_argument('ip_list', metavar='IPADDR', nargs='*', type=ipaddr,
                help="""IP address to ping.""")
 
 p.add_argument('-d', '--dns', action='store_true', dest='use_dns_ips',
@@ -102,7 +106,7 @@ p.add_argument('-d', '--dns', action='store_true', dest='use_dns_ips',
                     Comodo Secure DNS.""")
 
 p.add_argument('-e', '--exclude', action='append', metavar='IP',
-               dest='exclude_ips', default=[],
+               dest='exclude_ips', default=[], type=ipaddr,
                help="""Do not ping specified IP, even if it's been specified.
                     This can be used to exclude IPs added via the --dns flag.
                     Can be specified multiple times.""")
@@ -117,7 +121,7 @@ p.add_argument('-s', '--success', metavar='PERCENT', type=int, default=0,
                     PERCENT.  Special case 0 means success if any responses are
                     received.  Default is 0.""")
 
-p.add_argument('-g', '--gateway', metavar='IP',
+p.add_argument('-g', '--gateway', metavar='IP', type=ipaddr,
                help="""Use the specified gateway IP for outgoing pings.  This
                     causes a static route to be added to the system for each IP
                     to be pinged, so admin privileges are required.  Routes are

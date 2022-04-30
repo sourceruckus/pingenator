@@ -2,12 +2,3 @@
 
 * fix configure.ac FIXMEs
 Specifically, the python version required.
-
-* validate IPADDR arguments
-And potentially resolve them to check for duplicates.  The downside to
-resolving them is that then the raw IPs will be listed in ping output even if
-the user supplied hostnames.
-
-I actually *like* being able to specify the same IP multiple times in some
-cases (e.g., ping one host 10 times all at once), so I don't think "duplicate
-checking" is a good idea.
