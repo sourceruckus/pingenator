@@ -96,7 +96,11 @@ m4_foreach_w([P], NEEDED_PROGS,
   ])
 
 
-# FIXME: check ping for -w and -c?
+# check ping for -w and -c?
+#
+# NOTE: Not gonna bother as even busybox ping has both, but leaving
+#       this note here as a placeholder.
+#
 
 AC_CONFIG_FILES([Makefile
 		 src/Makefile

@@ -1,20 +1,13 @@
 -*- mode: org -*-
 
+* fix configure.ac FIXMEs
+Specifically, the python version required.
+
 * validate IPADDR arguments
 And potentially resolve them to check for duplicates.  The downside to
 resolving them is that then the raw IPs will be listed in ping output even if
 the user supplied hostnames.
 
-* configure check for ping -w and -c
-Do we need to check ping for existence of -c and -w?  I suppose we should...
-does busybox ping support both?
-
-* random sleep in sigint_handler
-Let's try adding a random, sub-second sleep in the sigint_handler as an attempt
-to keep ping summary statistics output by the subprocesses from being
-interleaved.  Could also do .1s incrementing global counter for subprocs.
-
-Actually, we need slightly better than this... the subprocs and main proc are
-all racing to sys.exit()... once one of them gets there, you don't get any more
-output.  Pretty sure that's what I'm seeing when testing -c0 with more than 3
-IPs (I don't get all the stats, just the first 2 usually).
+I actually *like* being able to specify the same IP multiple times in some
+cases (e.g., ping one host 10 times all at once), so I don't think "duplicate
+checking" is a good idea.
